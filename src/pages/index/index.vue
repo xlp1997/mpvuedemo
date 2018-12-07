@@ -1,130 +1,107 @@
 <template>
   <div class="container">
-    <div style="width: 100%;text-align: left; padding-bottom: 50px;">
-      <van-nav-bar title="标题" left-text="返回" left-arrow>
-        <van-icon name="search" slot="right"/>
-      </van-nav-bar>
-      <van-button type="primary">按钮</van-button>
-      <van-notice-bar
-        left-icon="https://img.yzcdn.cn/1.png"
-        text="足协杯战线连续第2年上演广州德比战，上赛季半决赛上恒大以两回合5-3的总比分淘汰富力。"
-      />
-      <div style="padding: 20px 0;">
-        <van-cell-group>
-          <van-field
-            v-model="sms"
-            center
-            clearable
-            label="短信验证码"
-            placeholder="请输入短信验证码"
-            use-button-slot
-          >
-            <van-button slot="button" size="small" type="primary">发送验证码</van-button>
-          </van-field>
-        </van-cell-group>
-      </div>
-      <!-- 图片引用的两种方式 -->
-      <img class="logo" src="/static/img/logo.png" alt>
-      <card :text="motto"></card>
-      <form class="form-container">
-        <input type="text" class="form-control" v-model="motto" placeholder="v-model">
-        <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy">
-      </form>
-      <!-- 路由跳转 -->
-      <a @click="gotoGame('pages/counter/main')" class="counter">去往Vuex示例页面</a>
-      <a @click="gotoGame('pages/logs/main')" class="counter">去往logs页面</a>
-    </div>
-    <div>
-      <my-tab-bar :activeIndex="0"></my-tab-bar>
-    </div>
+    <!-- <div :class="{ active: activeIndex!==0 }"> -->
+    <card0 v-if="card0State"></card0>
+    <!-- </div> -->
+    <!-- <div :class="{ active: activeIndex!==1 }"> -->
+    <!-- <card1 v-if="card1State"></card1> -->
+    <!-- </div> -->
+    <!-- <div>
+      <my-tab-bar @tabsClick="tabsClickP" :activeIndex="activeIndex"></my-tab-bar>
+    </div>-->
   </div>
 </template>
-
+<script src="https://unpkg.com/flyio/dist/fly.min.js"></script>
 <script>
 // 组件引用
-import card from "@/components/card";
+import card0 from "./groupGood/index";
+import card1 from "../logs/index";
+
 import myTabBar from "@/components/myTabBar";
 
 export default {
   data() {
     return {
+      userInfo: {
+        avatarUrl:
+          "https://wx.qlogo.cn/mmopen/vi_32/SYiaiba5faeraYBoQCWdsBX4hSjFKiawzhIpnXjejDtjmiaFqMqhIlRBqR7IVdbKE51npeF6X1cXxtDQD2bzehgqMA/132",
+        nickName: "jayzou"
+      },
+      activeIndex: 0,
       motto: "Hello World",
       readonly: false,
+
       demo1: "",
       menus: {
         menu1: "Take Photo",
         menu2: "Choose from photos"
       },
+      card0State: true,
+      card1State: false,
+
       showMenus: false,
       list: ["a", "b", "c"],
       result: ["a", "b"],
-      sms: ""
+      sms: "",
+      showSkeleton: true
     };
   },
   components: {
-    card,
+    card0,
+    card1,
     myTabBar
   },
   methods: {
     gotoGame(path) {
       this.navigatePageTo(this.router + path + "?id=123456");
+    },
+    tabsClickP(data) {
+      this.activeIndex = data;
+      console.log(data);
+      if (data == 0) {
+        this.editTitle("商品列表");
+        this.card0State = true;
+        this.card1State = false;
+      }
+      if (data == 1) {
+        this.editTitle("标签2");
+        this.card0State = false;
+
+        this.card1State = true;
+      }
+    },
+    gotoGamexx() {
+      this.gotoGame("pages/index/groupGood/main");
+      //通过用户id获取信息,参数直接写在url中
+      // this.$fly
+      //   .get(
+      //     "http://www.yindantech.com:8888/collage-web/commodityApi/selectCommodity.do?type=1&page=1&pageSize=10&establishDate="
+      //   )
+      //   .then(function(response) {
+      //     console.log(response);
+      //   })
+      //   .catch(function(error) {
+      //     console.log(error);
+      //   });
+    },
+    editTitle(title) {
+      // wx.setNavigationBarTitle({
+      //   title: title
+      // });
     }
+  },
+  mounted() {
+    // this.tabsClickP(this.activeIndex);
   }
 };
 </script>
 
 <style lang="less" scoped>
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.container {
+  // padding-bottom: 100rpx;
+  background: #ffffff;
 }
-
-.userinfo-avatar {
-  width: 128/7.5vw;
-  height: 128/7.5vw;
-  margin: 20/7.5vw;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-
-.usermotto {
-  margin-top: 150px;
-}
-
-.form-control {
-  display: block;
-  padding: 0 12px;
-  margin-bottom: 5px;
-  border: 1px solid #ccc;
-  height: 25px;
-  text-overflow: clip;
-  overflow: hidden;
-  white-space: nowrap;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  -webkit-user-select: none;
-  -moz-user-focus: none;
-  -moz-user-select: none;
-  -webkit-appearance: none;
-  outline: none;
-}
-
-.counter {
-  display: inline-block;
-  margin: 10px auto;
-  padding: 5px 10px;
-  color: blue;
-  border: 1px solid blue;
-}
-.container .girl {
-  width: 275px;
-  height: 400px;
-}
-.container .logo {
-  width: 200px;
-  height: 200px;
+.active {
+  display: none;
 }
 </style>
